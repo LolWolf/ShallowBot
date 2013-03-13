@@ -1,6 +1,6 @@
 # ShallowBot
 
-A challenege that was made by some of my friends: to create a chess algorithm (within a week) to beat each of them. Well, that's pretty much all.
+A challenge that was made by some of my friends: to create a chess algorithm (within a week) to beat each of them. Well, that's pretty much all.
 
 ##Commits
 
