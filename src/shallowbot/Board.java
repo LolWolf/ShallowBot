@@ -1,5 +1,7 @@
 package shallowbot;
 
+import java.util.HashMap;
+
 /**
  * User: @LolWolf
  * Project: ShallowBot
@@ -7,7 +9,7 @@ package shallowbot;
  * Time: 12:34 AM
  */
 public class Board {
-	byte[] board;
+	public byte[] board;
 	public Board() {
 		board = new byte[64];
 		for(int i=0; i<board.length; i++) {
@@ -67,6 +69,14 @@ public class Board {
 		return setPiece(a.charAt(0), a.charAt(1)-'0', piece);
 	}
 
+	public boolean pieceVector(int initial, int vec) {
+		byte pieceType = board[initial];
+
+		board[initial] = PieceLabels.EMPTY;
+		board[initial+vec] = pieceType;
+
+		return true;
+	}
 
 	public static int toIdx(char a, int b) {
 	    //Standard notation to index
