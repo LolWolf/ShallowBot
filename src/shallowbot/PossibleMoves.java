@@ -58,6 +58,10 @@ public class PossibleMoves {
 
         return _case;
     }
+    //TODO: Complete Knight Moves!
+    private static boolean generateKnightMoves(Board b, ArrayList<Move> moveList, int position) {
+        return false;
+    }
 
 	private static boolean generateMacroMoves(Board b, ArrayList<Move> moveList, int pos, int maxTo, int vec) {
 		int pos_init = pos;
