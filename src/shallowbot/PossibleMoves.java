@@ -58,8 +58,19 @@ public class PossibleMoves {
 
         return _case;
     }
-    //TODO: Complete Knight Moves!
+
     private static boolean generateKnightMoves(Board b, ArrayList<Move> moveList, int position) {
+        boolean _case = false;
+
+        _case |= generateMacroMoves(b, moveList, position, 1, 23);
+        _case |= generateMacroMoves(b, moveList, position, 1, 25);
+        _case |= generateMacroMoves(b, moveList, position, 1, 11);
+        _case |= generateMacroMoves(b, moveList, position, 1, 5);
+        _case |= generateMacroMoves(b, moveList, position, 1, -5);
+        _case |= generateMacroMoves(b, moveList, position, 1, -23);
+        _case |= generateMacroMoves(b, moveList, position, 1, -25);
+        _case |= generateMacroMoves(b, moveList, position, 1, -11);
+
         return false;
     }
 
