@@ -98,14 +98,14 @@ public class PossibleMoves {
     private static boolean generateKnightMoves(Board b, ArrayList<Move> moveList, int position) {
         boolean _case = false;
 
-        _case |= generateMacroMoves(b, moveList, position, 1, 23);
-        _case |= generateMacroMoves(b, moveList, position, 1, 25);
-        _case |= generateMacroMoves(b, moveList, position, 1, 11);
-        _case |= generateMacroMoves(b, moveList, position, 1, 5);
-        _case |= generateMacroMoves(b, moveList, position, 1, -5);
-        _case |= generateMacroMoves(b, moveList, position, 1, -23);
-        _case |= generateMacroMoves(b, moveList, position, 1, -25);
-        _case |= generateMacroMoves(b, moveList, position, 1, -11);
+        _case |= generateMacroMoves(b, moveList, position, 1, 15);
+        _case |= generateMacroMoves(b, moveList, position, 1, 17);
+        _case |= generateMacroMoves(b, moveList, position, 1, 6);
+        _case |= generateMacroMoves(b, moveList, position, 1, 10);
+        _case |= generateMacroMoves(b, moveList, position, 1, -10);
+        _case |= generateMacroMoves(b, moveList, position, 1, -6);
+        _case |= generateMacroMoves(b, moveList, position, 1, -15);
+        _case |= generateMacroMoves(b, moveList, position, 1, -17);
 
         return _case;
     }
@@ -143,8 +143,11 @@ public class PossibleMoves {
         while(maxTo>0) {
             pos += vec;
 
+            int l_pos0 = pos_init%8;
+            int l_vec = vec%8;
+
             //Check bounds
-            if(pos_init%8 < pos%8 || pos > 63 || pos < 0) {
+            if(l_pos0+l_vec > 8 || l_vec+l_pos0 < 0 || pos > 63 || pos < 0) {
                 return false;
             }
 
