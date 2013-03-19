@@ -16,6 +16,9 @@ public class Board {
 			board[i] = PieceLabels.EMPTY;
 		}
 	}
+    public Board(Board b) {
+        this.board = b.board.clone();
+    }
 	public void setInitialPosition() {
 		for(char _temp='a'; _temp<='h'; _temp++) {
 			setPiece(_temp, 2, PieceLabels.W_PAWN);
@@ -47,6 +50,12 @@ public class Board {
 		setPiece("d8", PieceLabels.B_QUEEN);
 	}
 
+    public boolean makeMove(Move m) {
+        byte _temp = board[m.from];
+        board[m.to] = _temp;
+        board[m.from] = PieceLabels.EMPTY;
+        return true;
+    }
 
 	public boolean setPiece(char org_a, int org_b, char to_a, int to_b, byte piece) {
 		setPiece(to_a, to_b, piece);
@@ -82,4 +91,7 @@ public class Board {
 	    //Standard notation to index
 		return 8*(b-1)+(a-'a');
 	}
+    public static String toStd(int a) {
+        return "" + (a/8+1) + (char)(a%8+'a');
+    }
 }
