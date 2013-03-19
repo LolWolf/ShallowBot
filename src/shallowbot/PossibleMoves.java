@@ -16,10 +16,7 @@ public class PossibleMoves {
         boolean _case = false;
         currentPlayer = player;
 
-        if(moves==null)
-            mateChecking = true;
-        else
-            mateChecking = false;
+        mateChecking = moves == null;
 
 
         for(int i=0; i<64; i++) {
@@ -98,14 +95,14 @@ public class PossibleMoves {
     private static boolean generateKnightMoves(Board b, ArrayList<Move> moveList, int position) {
         boolean _case = false;
 
-        _case |= generateMacroMoves(b, moveList, position, 1, 15);
-        _case |= generateMacroMoves(b, moveList, position, 1, 17);
-        _case |= generateMacroMoves(b, moveList, position, 1, 6);
+        _case |= generateMacroMoves(b, moveList, position, 1, 6 );
         _case |= generateMacroMoves(b, moveList, position, 1, 10);
-        _case |= generateMacroMoves(b, moveList, position, 1, -10);
-        _case |= generateMacroMoves(b, moveList, position, 1, -6);
+        _case |= generateMacroMoves(b, moveList, position, 1, 17);
+        _case |= generateMacroMoves(b, moveList, position, 1, 15);
         _case |= generateMacroMoves(b, moveList, position, 1, -15);
         _case |= generateMacroMoves(b, moveList, position, 1, -17);
+        _case |= generateMacroMoves(b, moveList, position, 1, -10);
+        _case |= generateMacroMoves(b, moveList, position, 1, -6);
 
         return _case;
     }
@@ -138,16 +135,19 @@ public class PossibleMoves {
         }
     }
 
-	private static boolean generateMacroMoves(Board b, ArrayList<Move> moveList, int pos, int maxTo, int vec) {
+ 	private static boolean generateMacroMoves(Board b, ArrayList<Move> moveList, int pos, int maxTo, int vec) {
 		int pos_init = pos;
+
+        int l_pos0;
+        int l_vec = vec%8;
+
+
         while(maxTo>0) {
+            l_pos0 = pos%8;
             pos += vec;
 
-            int l_pos0 = pos_init%8;
-            int l_vec = vec%8;
-
             //Check bounds
-            if(l_pos0+l_vec > 8 || l_vec+l_pos0 < 0 || pos > 63 || pos < 0) {
+            if(pos > 63 || pos < 0 || l_pos0%8==7 && l_vec>0 || l_pos0%8==0 && l_vec<0) {
                 return false;
             }
 
@@ -171,10 +171,14 @@ public class PossibleMoves {
     private static boolean generateMacroPawnMoves(Board b, ArrayList<Move> moveList, int pos, int maxTo, int vec) {
         int pos_init = pos;
 
+        int l_pos0;
+        int l_vec = vec%8;
+
         while(maxTo>0) {
+            l_pos0 = pos%8;
             pos += vec;
             //Check bounds
-            if(pos_init%8 < pos%8 || pos > 63 || pos < 0) {
+            if(pos > 63 || pos < 0 || l_pos0%8==7 && l_vec>0 || l_pos0%8==0 && l_vec<0) {
                 return false;
             }
 
@@ -190,6 +194,7 @@ public class PossibleMoves {
         int pos_init = pos;
         pos += vec;
 
+        //TODO: Correct this
         //Check bounds
         if(pos_init%8 < pos%8 || pos > 63 || pos < 0) {
             return false;
