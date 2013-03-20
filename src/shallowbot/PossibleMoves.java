@@ -95,14 +95,16 @@ public class PossibleMoves {
     private static boolean generateKnightMoves(Board b, ArrayList<Move> moveList, int position) {
         boolean _case = false;
 
-        _case |= generateMacroMoves(b, moveList, position, 1, 6 );
-        _case |= generateMacroMoves(b, moveList, position, 1, 10);
+        int l_pos = position%8;
+
+        if(l_pos<6)_case |= generateMacroMoves(b, moveList, position, 1, -6 );
+        if(l_pos<6) _case |= generateMacroMoves(b, moveList, position, 1, 10);
         _case |= generateMacroMoves(b, moveList, position, 1, 17);
         _case |= generateMacroMoves(b, moveList, position, 1, 15);
         _case |= generateMacroMoves(b, moveList, position, 1, -15);
         _case |= generateMacroMoves(b, moveList, position, 1, -17);
-        _case |= generateMacroMoves(b, moveList, position, 1, -10);
-        _case |= generateMacroMoves(b, moveList, position, 1, -6);
+        if(l_pos>1)_case |= generateMacroMoves(b, moveList, position, 1, -10);
+        if(l_pos>1)_case |= generateMacroMoves(b, moveList, position, 1, 6);
 
         return _case;
     }
