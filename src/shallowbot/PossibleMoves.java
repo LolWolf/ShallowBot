@@ -1,6 +1,7 @@
 package shallowbot;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * User: @LolWolf
@@ -23,22 +24,22 @@ public class PossibleMoves {
             if((board.board[i]&8) != 8*(player-1)) continue;
             switch(board.board[i]&7) {
                 case PieceLabels.W_KNIGHT:
-                    generateKnightMoves(board, moves, i);
+                    _case |= generateKnightMoves(board, moves, i);
                     break;
                 case PieceLabels.W_QUEEN:
-                    generateQueenMoves(board, moves, i);
+                    _case |= generateQueenMoves(board, moves, i);
                     break;
                 case PieceLabels.W_PAWN:
-                    generatePawnMoves(board, moves, i);
+                    _case |= generatePawnMoves(board, moves, i);
                     break;
                 case PieceLabels.W_ROOK:
-                    generateRookMoves(board, moves, i);
+                    _case |= generateRookMoves(board, moves, i);
                     break;
                 case PieceLabels.W_BISHOP:
-                    generateBishopMoves(board, moves, i);
+	                _case |= generateBishopMoves(board, moves, i);
                     break;
                 case PieceLabels.W_KING:
-                    generateKingMoves(board, moves, i);
+	                _case |= generateKingMoves(board, moves, i);
                     break;
             }
         }
@@ -68,6 +69,7 @@ public class PossibleMoves {
         _case |= generateMacroMoves(b, moveList, position, 1, -1);
         _case |= generateMacroMoves(b, moveList, position, 1, 8);
         _case |= generateMacroMoves(b, moveList, position, 1, -8);
+	    //TODO: Pretty obvious
 
         return _case;
     }
@@ -113,13 +115,20 @@ public class PossibleMoves {
 
         boolean _case = false;
 
+	    int l_pos = position%8;
+
         if(position/8!=(currentPlayer==1?1:6)) {
             _case |= generateMacroPawnMoves(b, moveList, position, 1, currentPlayer==1?8:-8);
         } else {
             _case |= generateMacroPawnMoves(b, moveList, position, 2, currentPlayer==1?8:-8);
         }
-        _case |= generatePawnCapture(b, moveList, position, currentPlayer==1?9:-9);
-        _case |= generatePawnCapture(b, moveList, position, currentPlayer==1?7:-7);
+	    if(currentPlayer==1) {
+            if(l_pos<7) _case |= generatePawnCapture(b, moveList, position, 9);
+            if(l_pos>0) _case |= generatePawnCapture(b, moveList, position, 7);
+	    } else {
+		    if(l_pos<7) _case |= generatePawnCapture(b, moveList, position, -7);
+		    if(l_pos>0) _case |= generatePawnCapture(b, moveList, position, 9);
+	    }
 
         considerPromotionMoves(b, moveList);
 
@@ -156,9 +165,9 @@ public class PossibleMoves {
             //Check for empty/taken pieces.
             if(b.board[pos]==0) {
                 if(!mateChecking) moveList.add(new Move(pos_init, pos));
-            } else if((b.board[pos] & 8) != (currentPlayer-1)*8) {
+            } else if((b.board[pos] & 8) != (currentPlayer==1?0:8)) {
                 if(!mateChecking) moveList.add(new Move(pos_init, pos));
-                if(b.board[pos]==(currentPlayer==1 ? PieceLabels.W_KING : PieceLabels.B_KING)) {
+                if(b.board[pos]==(currentPlayer==1 ? PieceLabels.B_KING : PieceLabels.W_KING)) {
                     return true;
                 }
             } else {
@@ -196,14 +205,13 @@ public class PossibleMoves {
         int pos_init = pos;
         pos += vec;
 
-        //TODO: Correct this
         //Check bounds
-        if(pos_init%8 < pos%8 || pos > 63 || pos < 0) {
+        if(pos > 63 || pos < 0) {
             return false;
         }
 
         //Check for diagonal capture
-        if((b.board[pos]&8)!=(currentPlayer-1)*8 && b.board[pos]!=0) {
+        if(b.board[pos]!=0 && (b.board[pos]&8)!=(currentPlayer-1)*8) {
             if(!mateChecking) moveList.add(new Move(pos_init, pos));
             if((b.board[pos]&7)==PieceLabels.W_KING)
                 return true;
@@ -214,11 +222,14 @@ public class PossibleMoves {
         mateChecking = true;
         currentPlayer = currentPlayer==1?2:1;
         //Make move, check for mate, and undo those that evaluate to true.
-        for(Move m : moveList) {
-            b.makeMove(m);
-            if(generatePossibleMoves(b, null, currentPlayer))
-                moveList.remove(m);
-            b.makeMove(m.reverse());
-        }
+	    Iterator<Move> i = moveList.iterator();
+	    Move m;
+	    while(i.hasNext()) {
+		    m = i.next();
+		    b.makeMove(m);
+		    if(generatePossibleMoves(b, null, currentPlayer))
+			    i.remove();
+		    b.makeMove(m.reverse());
+	    }
     }
 }
