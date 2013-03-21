@@ -17,7 +17,7 @@ public class PossibleMoves {
         boolean _case = false;
         currentPlayer = player;
 
-        mateChecking = moves == null;
+        mateChecking = (moves == null);
 
 
         for(int i=0; i<64; i++) {
@@ -44,8 +44,8 @@ public class PossibleMoves {
             }
         }
 
-        if(!mateChecking)
-            removeInvalidMoves(board, moves);
+        //if(!mateChecking)
+          //  removeInvalidMoves(board, moves);
 
         return _case;
 
@@ -69,7 +69,10 @@ public class PossibleMoves {
         _case |= generateMacroMoves(b, moveList, position, 1, -1);
         _case |= generateMacroMoves(b, moveList, position, 1, 8);
         _case |= generateMacroMoves(b, moveList, position, 1, -8);
-	    //TODO: Pretty obvious
+	    _case |= generateMacroMoves(b, moveList, position, 1, 9);
+        _case |= generateMacroMoves(b, moveList, position, 1, 7);
+        _case |= generateMacroMoves(b, moveList, position, 1, -7);
+        _case |= generateMacroMoves(b, moveList, position, 1, -9);
 
         return _case;
     }
@@ -117,7 +120,7 @@ public class PossibleMoves {
 
 	    int l_pos = position%8;
 
-        if(position/8!=(currentPlayer==1?1:6)) {
+        if(position/8 != (currentPlayer == 1 ? 1 : 6)) {
             _case |= generateMacroPawnMoves(b, moveList, position, 1, currentPlayer==1?8:-8);
         } else {
             _case |= generateMacroPawnMoves(b, moveList, position, 2, currentPlayer==1?8:-8);
@@ -221,6 +224,7 @@ public class PossibleMoves {
     private static void removeInvalidMoves(Board b, ArrayList<Move> moveList) {
         mateChecking = true;
         currentPlayer = currentPlayer==1?2:1;
+
         //Make move, check for mate, and undo those that evaluate to true.
 	    Iterator<Move> i = moveList.iterator();
 	    Move m;
