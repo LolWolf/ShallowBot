@@ -9,7 +9,9 @@ import java.util.ArrayList;
  * Time: 7:04 AM
  */
 public class NegaMax {
+	private static int leaves=0;
     public static MoveScore negaMaxInit(Board b, int player, int depth) {
+	    leaves = 0;
         MoveScore ms = new MoveScore();
 
         ArrayList<Move> possible_moves = new ArrayList<Move>();
@@ -18,8 +20,11 @@ public class NegaMax {
 
         int _temp;
 
+	    byte pieceTaken;
+
         for(Move m : possible_moves) {
-            b.makeMove(m);
+	        pieceTaken = b.makeMove(m);
+
 
             _temp = -negaMax(b, player==1?2:1, depth-1);
             if(_temp > ms.score) {
@@ -27,14 +32,16 @@ public class NegaMax {
                 ms.move = m;
             }
 
-            b.makeMove(m.reverse());
+	        b.makeMove(m.reverse(), pieceTaken);
         }
 
         return ms;
     }
 
     public static int negaMax(Board b, int player, int depth) {
-        if(depth<=0) {
+//        leaves++;
+//	    if(leaves%1000==0) System.out.println("At "+leaves+" leaves");
+	    if(depth<=0) {
             return evaluateBoard(b, player);
         }
 
@@ -47,15 +54,18 @@ public class NegaMax {
         int _temp;
         int _max = -Constants.INFTY;
 
+	    byte pieceTaken;
+
         for(Move m : possible_moves) {
-            b.makeMove(m);
+            pieceTaken = b.makeMove(m);
 
             _temp = -negaMax(b, player==1?2:1, depth-1);
             if(_temp > _max) {
                 _max = _temp;
             }
 
-            b.makeMove(m.reverse());
+            b.makeMove(m.reverse(), pieceTaken);
+//	        System.out.println("Making move "+m.toString()+" with reverse "+m.reverse().toString());
         }
 
         return _max;

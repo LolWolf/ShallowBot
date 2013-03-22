@@ -12,35 +12,49 @@ import java.util.Iterator;
 public class PossibleMoves {
     private static int currentPlayer;
     private static boolean mateChecking;
+	private static int totalGeneratedMoves = 0;
 
     public static boolean generatePossibleMoves(Board board, ArrayList<Move> moves, int player) {
         boolean _case = false;
         currentPlayer = player;
 
         mateChecking = (moves == null);
-
+//	    if(!mateChecking) {
+//		    totalGeneratedMoves++;
+//		    if(totalGeneratedMoves%100000==0) System.out.println("Generated "+totalGeneratedMoves);
+//	    }
+//	    if(totalGeneratedMoves>6200000) {
+//		    System.out.println(board);
+//		    System.out.println("Player: "+player);
+//	    }
 
         for(int i=0; i<64; i++) {
             if((board.board[i]&8) != 8*(player-1)) continue;
             switch(board.board[i]&7) {
                 case PieceLabels.W_KNIGHT:
-                    _case |= generateKnightMoves(board, moves, i);
-                    break;
+	                //if(totalGeneratedMoves==2467) log("KNIGHT");
+	                _case |= generateKnightMoves(board, moves, i);
+	                break;
                 case PieceLabels.W_QUEEN:
-                    _case |= generateQueenMoves(board, moves, i);
-                    break;
+	                //if(totalGeneratedMoves==2467) log("QUEEN");
+	                _case |= generateQueenMoves(board, moves, i);
+	                break;
                 case PieceLabels.W_PAWN:
+	                //if(totalGeneratedMoves==2467) log("PAWN");
                     _case |= generatePawnMoves(board, moves, i);
-                    break;
+	                break;
                 case PieceLabels.W_ROOK:
-                    _case |= generateRookMoves(board, moves, i);
-                    break;
+	                //if(totalGeneratedMoves==2467) log("ROOK");
+	                _case |= generateRookMoves(board, moves, i);
+	                break;
                 case PieceLabels.W_BISHOP:
+	                //if(totalGeneratedMoves==2467) log("BISHOP");
 	                _case |= generateBishopMoves(board, moves, i);
-                    break;
+	                break;
                 case PieceLabels.W_KING:
+	                //if(totalGeneratedMoves==2467) log("KING");
 	                _case |= generateKingMoves(board, moves, i);
-                    break;
+	                break;
             }
         }
 
@@ -122,30 +136,39 @@ public class PossibleMoves {
 
         if(position/8 != (currentPlayer == 1 ? 1 : 6)) {
             _case |= generateMacroPawnMoves(b, moveList, position, 1, currentPlayer==1?8:-8);
+	        //if(totalGeneratedMoves==2467) log("PAWN Probs");
         } else {
             _case |= generateMacroPawnMoves(b, moveList, position, 2, currentPlayer==1?8:-8);
+	        //if(totalGeneratedMoves==2467) log("PAWN Probs 2");
+
         }
 	    if(currentPlayer==1) {
             if(l_pos<7) _case |= generatePawnCapture(b, moveList, position, 9);
             if(l_pos>0) _case |= generatePawnCapture(b, moveList, position, 7);
 	    } else {
 		    if(l_pos<7) _case |= generatePawnCapture(b, moveList, position, -7);
-		    if(l_pos>0) _case |= generatePawnCapture(b, moveList, position, 9);
+		    if(l_pos>0) _case |= generatePawnCapture(b, moveList, position, -9);
+		    //if(totalGeneratedMoves==2467) log("PAWN Capture 2");
 	    }
 
         considerPromotionMoves(b, moveList);
+	    //if(totalGeneratedMoves==2467) log("PAWN promotion");
 
         return _case;
     }
 
     private static void considerPromotionMoves(Board b, ArrayList<Move> moveList) {
         if(moveList == null) return;
-        for(Move m : moveList) {
-            if((b.board[m.from]&7)==PieceLabels.W_PAWN && (m.to/8==7 || m.to/8==0)) {
+	    int moveListSize = moveList.size();
+        for(int i=0; i<moveListSize; i++) {
+	        Move m = moveList.get(i);
+	        //System.out.println(moveList);
+            if((b.board[m.from]&7)==PieceLabels.W_PAWN && (m.to/8==7 || m.to/8==0) && m.promotion==0) {
                 m.promotion |= 8*(currentPlayer - 1);
                 moveList.add(new Move(m.from, m.to, (byte)(m.promotion|PieceLabels.W_QUEEN)));
                 m.promotion |= PieceLabels.W_KNIGHT;
             }
+
         }
     }
 
@@ -173,6 +196,7 @@ public class PossibleMoves {
                 if(b.board[pos]==(currentPlayer==1 ? PieceLabels.B_KING : PieceLabels.W_KING)) {
                     return true;
                 }
+	            return false;
             } else {
                 break;
             }
@@ -236,4 +260,7 @@ public class PossibleMoves {
 		    b.makeMove(m.reverse());
 	    }
     }
+	private static void log(Object s) {
+		System.out.println("LOG: "+s.toString());
+	}
 }

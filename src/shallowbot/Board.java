@@ -1,6 +1,5 @@
 package shallowbot;
 
-import java.util.HashMap;
 
 /**
  * User: @LolWolf
@@ -50,12 +49,18 @@ public class Board {
 		setPiece("d8", PieceLabels.B_QUEEN);
 	}
 
-    public boolean makeMove(Move m) {
+    public byte makeMove(Move m) {
         byte _temp = board[m.from];
+	    byte _temp_other = board[m.to];
         board[m.to] = _temp;
         board[m.from] = PieceLabels.EMPTY;
-        return true;
+        return _temp_other;
     }
+	public void makeMove(Move m, byte pieceTaken) {
+		byte _temp = board[m.from];
+		board[m.to] = _temp;
+		board[m.from] = pieceTaken;
+	}
 
 	public boolean setPiece(char org_a, int org_b, char to_a, int to_b, byte piece) {
 		setPiece(to_a, to_b, piece);
@@ -94,4 +99,17 @@ public class Board {
     public static String toStd(int a) {
         return "" + (a/8+1) + (char)(a%8+'a');
     }
+
+	@Override
+	public String toString() {
+		String s = "";
+		for(int i=0; i<64; i++) {
+			if(i%8==0) {
+				s+="\n";
+			}
+
+			s+=board[i]+"\t";
+		}
+		return s.substring(1);
+	}
 }
